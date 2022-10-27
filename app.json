@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "CreditApp",
-    "slug": "CreditApp",
+    "slug": "creditapp",
     "version": "1.0.0",
+    "owner":"annachul",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
