@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, View, Text, TextInput, StyleSheet,Modal } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 class LoginOrCreateForm extends Component {
@@ -42,26 +42,25 @@ class LoginOrCreateForm extends Component {
    
 
     axios
-      .post(`http://6031-88-10-182-37.ngrok.io/api/auth/${endpoint}/`, payload)
+      .post(`https://1a34-88-10-178-60.eu.ngrok.io/api/auth/${endpoint}/`, payload)
       .then(response => {
         const { token, user } = response.data;
 
         axios.defaults.headers.common.Authorization = `Token ${token}`;
         
         console.log(token)
-        _storeData = async () => {
           try {
-            await AsyncStorage.setItem(
-              'mytoken',
-              token
-            );
-            await SecureStore.setItemAsync('secure_token',token);
+             SecureStore.setItemAsync('secure_token',token);
+            console.log("Get async storage")
+            SecureStore.getItemAsync('secure_token').then(token => {
+              console.log(token)
+              Actions.main();
+            });
+            
           } catch (error) {
             console.log(error)
           }
-        };
-      
-        Actions.main();
+
       })
       .catch(function (error) {
         console.log(error)
