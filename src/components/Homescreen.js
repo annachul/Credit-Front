@@ -1,15 +1,24 @@
 import * as SecureStore from 'expo-secure-store';
 import React, { Component, useEffect } from 'react';
 import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
-import RNPickerSelect from "react-native-picker-select";
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios, { Axios } from 'axios';
 
 function HomeScreen({ navigation }) {
 
-  const  handleRequest = () => {
-    console.log(selectedItem);
-    
+  const  handleRequest = () =>  {
+    var payload = {name: info, price: sum, category: selectedItem[0]}
+    SecureStore.getItemAsync('secure_token').then(token => {
+  
+      axios
+      .post('https://1a34-88-10-178-60.eu.ngrok.io/api/payments', payload,
+)
+      .then (response => response.json())
+      .then (response => {
+        console.log(response)
+      })
+      })
   }
 
 const onSelectedItemsChange = (selectedItems) => {
@@ -18,6 +27,8 @@ const onSelectedItemsChange = (selectedItems) => {
 }
   const [selectedItem, setSelectedItem] = React.useState([])
   const [categories, setCategories] = React.useState([])
+  const [info, setInfo] = React.useState("")
+  const [sum, setSum] = React.useState("");
     useEffect(()=>{SecureStore.getItemAsync('secure_token').then(token => {
 
       fetch('https://1a34-88-10-178-60.eu.ngrok.io/api/categories',
@@ -46,12 +57,17 @@ return (
     <View>
     <TextInput
             placeholder="Sum"
+            onChangeText={setSum}
+            keyboardType='numeric'
             autoCorrect={false}
+            value={sum}
             style={styles.textInputStyle}
           />
     <TextInput
             placeholder="Info"
+            onChangeText={setInfo}
             autoCorrect={false}
+            value={info}
             style={styles.textInputStyle}
           />
     </View>
