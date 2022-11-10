@@ -53,8 +53,9 @@ const onSelectedItemsChange = (selectedItems) => {
 
 return (
   <View style={styles.formContainerStyle}>
-    <Text >Add new expense</Text>
-    <View>
+    <View style={styles.alignStyle}>
+    <Text>Add new expense</Text></View>
+    <View style={styles.alignStyle}>
     <TextInput
             placeholder="Sum"
             onChangeText={setSum}
@@ -71,7 +72,12 @@ return (
             style={styles.textInputStyle}
           />
     </View>
-    <SectionedMultiSelect style={styles.picker}
+    <View style={styles.picker}>
+    <SectionedMultiSelect 
+          styles={{button: {
+            backgroundColor: '#9370DB',
+          },
+          }}
           single={true}
           IconRenderer={Icon}
           items={categories} 
@@ -82,7 +88,7 @@ return (
           readOnlyHeadings={true}
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItem}
-        />
+        /></View>
     <Button color= '#9370DB' title="Confirm" onPress={handleRequest.bind(this)}/>
   </View>
 );
@@ -107,13 +113,21 @@ const styles = StyleSheet.create({
     formContainerStyle: {
         flex: 1,
         flexDirection: 'column',
-        //alignItems: 'center',
         justifyContent: 'center',
       },
       picker: {
-        alignItems: 'left'
+        padding: 0,
+        width: 300,
+        justifyContent: 'center',
+        margin: 6,
+        borderColor: "#9370DB",
+        borderWidth: 1,
+        borderRadius: 10,
+        left: 30
       },
-
+      alignStyle:{
+        alignItems: 'center',
+      },
   });
   
 
