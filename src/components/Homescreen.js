@@ -1,26 +1,55 @@
 import * as SecureStore from 'expo-secure-store';
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useCallback } from 'react';
 import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios, { Axios } from 'axios';
+import DatePicker from 'react-native-datepicker'
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
 
 function HomeScreen({ navigation }) {
+  const [result, setResult] = React.useState([])
+  const [fileResponse, setFileResponse] = React.useState([]);
+ 
+  const handleDocumentSelection = React.useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.allFiles],
+        presentationStyle: 'fullScreen',
+      });
+      setFileResponse(response);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
+  var date = new Date()
+  var today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+  const [mydate, setMydate] =React.useState(today);
 
   const  handleRequest = () =>  {
-    var payload = {name: info, price: sum, category: selectedItem[0]}
+    var payload = {name: info, price: sum, category: selectedItem[0], date: mydate}
     SecureStore.getItemAsync('secure_token').then(token => {
   
       axios
-      .post('https://1a34-88-10-178-60.eu.ngrok.io/api/payments', payload,
+      .post('https://0ca6-97-71-223-147.ngrok.io/api/payments', payload,
 )
       .then (response => response.json())
       .then (response => {
         console.log(response)
-      })
-      })
-  }
 
+      })
+      .then(setInfo(""))
+      .then(setSum(""))
+      .then(setSelectedItem([]))
+      })
+      
+  }
 const onSelectedItemsChange = (selectedItems) => {
   console.log(selectedItems);
   setSelectedItem(selectedItems);
@@ -31,7 +60,7 @@ const onSelectedItemsChange = (selectedItems) => {
   const [sum, setSum] = React.useState("");
     useEffect(()=>{SecureStore.getItemAsync('secure_token').then(token => {
 
-      fetch('https://1a34-88-10-178-60.eu.ngrok.io/api/categories',
+      fetch('https://0ca6-97-71-223-147.ngrok.io/api/categories',
       {
           headers: {
               'Authorization': `Token ${token}`
@@ -47,6 +76,7 @@ const onSelectedItemsChange = (selectedItems) => {
       console.log(response['children'])
       setCategories(response['children'])
       })
+      
     })
 
   }, [])
@@ -70,7 +100,22 @@ return (
             autoCorrect={false}
             value={info}
             style={styles.textInputStyle}
+           
           />
+    <DatePicker
+        style={{width: 330,
+          padding: 15,
+        }}
+        date={mydate}
+        mode="date"
+        placeholder="select date"
+        format="YYYY-MM-DD"
+        suffixIcon={null}
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        onDateChange={(date) => {setMydate(date)}}
+        showIcon={false}
+      />
     </View>
     <View style={styles.picker}>
     <SectionedMultiSelect 
@@ -90,13 +135,24 @@ return (
           selectedItems={selectedItem}
         /></View>
     <Button color= '#9370DB' title="Confirm" onPress={handleRequest.bind(this)}/>
+    <Button title="Select 📑" onPress={handleDocumentSelection} />
+    <Button
+        title="open picker for single selection of pdf file"
+        onPress={() => {
+          DocumentPicker.pick({
+            type: types.csv,
+          })
+            .then(setResult)
+            .catch(handleError)
+        }}
+      />
   </View>
 );
 } 
 
 const styles = StyleSheet.create({
     buttonContainerStyle: {
-      flex: 1,
+      display: "flex",
       flexDirection: 'column',
       justifyContent: 'center',
       backgroundColor: 'white'
@@ -111,7 +167,7 @@ const styles = StyleSheet.create({
       borderRadius: 10
     }, 
     formContainerStyle: {
-        flex: 1,
+        display: "flex",
         flexDirection: 'column',
         justifyContent: 'center',
       },

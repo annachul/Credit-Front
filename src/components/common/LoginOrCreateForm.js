@@ -42,7 +42,7 @@ class LoginOrCreateForm extends Component {
    
 
     axios
-      .post(`https://1a34-88-10-178-60.eu.ngrok.io/api/auth/${endpoint}/`, payload)
+      .post(`https://0ca6-97-71-223-147.ngrok.io/api/auth/${endpoint}/`, payload)
       .then(response => {
         const { token, user } = response.data;
 
