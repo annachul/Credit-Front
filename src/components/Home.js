@@ -9,24 +9,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LoginOrCreateForm from './common/LoginOrCreateForm';
 import * as SecureStore from 'expo-secure-store';
 import HomeScreen from './Homescreen';
+import ArchiveScreen from './ArchiveScreen';
+import AnalysisScreen from './AnalysisScreen';
 
 
 
-function ArchiveScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Archive!</Text>
-    </View>
-  );
-}
-
-function AnalysisScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Analysis!</Text>
-    </View>
-  );
-}
 
 
 class Home extends Component {
